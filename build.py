@@ -50,10 +50,7 @@ def main():
         urls.append(BASE + "/" + path + "/")
     (OUT / "pilot.css").write_text((ROOT / "pilot.css").read_text(), encoding="utf-8")
     (OUT / ".nojekyll").touch()
-    (OUT / "robots.txt").write_text(f"User-agent: *
-Allow: /
-Sitemap: {BASE}/sitemap.xml
-")
+    (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f"<url><loc>{url}</loc></url>" for url in urls) + "</urlset>")
     (OUT / "404.html").write_text("<!doctype html><title>Page unavailable</title><h1>Inventory record unavailable</h1><p>This observation may have been replaced or withdrawn. Confirm with Bunnin.</p>")
     print(f"Built {len(records)} public part pages")
