@@ -26,8 +26,13 @@ def header(roof):
 def footer(roof):
     dealer = ROOFS[roof]
     return f'''<footer><div><strong>{escape(dealer["name"])}</strong><a href="{dealer["domain"]}/contact.htm">Contact</a><a href="{dealer["domain"]}/dealership/about.htm">About</a><a href="{dealer["domain"]}/privacy.htm">Privacy</a></div><p>{escape(dealer["address"])} · {dealer["phone"]}</p></footer>'''
+def group_header():
+    return '''<div class="top"><span>Bunnin Chevrolet Parts</span><span>Fillmore &amp; Santa Paula</span></div><header><a class="brand" href="/bunnin-parts-pilot/"><span class="chevy">CHEVROLET</span><span class="group-name">Bunnin Chevrolet Parts</span></a><nav><a href="/bunnin-parts-pilot/">Parts Center</a><a href="https://www.bunninchevroletoffillmore.com/">Fillmore</a><a href="https://www.bunninchevroletofsantapaula.com/">Santa Paula</a></nav></header>'''
+def group_footer():
+    return '''<footer><div><strong>Bunnin Chevrolet Parts</strong><a href="https://www.bunninchevroletoffillmore.com/contact.htm">Fillmore Contact</a><a href="https://www.bunninchevroletofsantapaula.com/contact.htm">Santa Paula Contact</a></div><p>Choose a Bunnin rooftop to request parts information.</p></footer>'''
 def page(title, body, roof, robots="index,follow"):
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title><meta name="robots" content="{robots}"><link rel="stylesheet" href="/bunnin-parts-pilot/pilot.css"></head><body>{header(roof)}<main>{body}</main>{footer(roof)}</body></html>'''
+    site_header, site_footer = (group_header(), group_footer()) if roof is None else (header(roof), footer(roof))
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title><meta name="robots" content="{robots}"><link rel="stylesheet" href="/bunnin-parts-pilot/pilot.css"></head><body>{site_header}<main>{body}</main>{site_footer}</body></html>'''
 def save(path, content):
     target = OUT / path / "index.html" if path else OUT / "index.html"
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -37,10 +42,10 @@ def main():
     OUT.mkdir(exist_ok=True)
     actions = "".join(f'<a class="button" href="{handoff(None, roof)}">Request Parts — {roof}</a>' for roof in ROOFS)
     home = f'''<section class="hero"><p>GENUINE GM PARTS</p><h1>What do you need for your Chevrolet?</h1><p>Tell us what you are looking for and include your vehicle information. A Bunnin parts professional will confirm fitment, availability, price, and next steps.</p><div class="actions">{actions}</div><p class="subtle">Already have a GM part number? <a href="/bunnin-parts-pilot/search/">Search by part number</a>.</p></section><section class="notice"><h2>Genuine parts. Your Bunnin parts team.</h2><p>Inventory was last observed {STAMP}. It is not live availability. Bunnin confirms fitment, availability, price, and next steps before any commitment.</p></section>'''
-    save("", page("Genuine GM Parts | Bunnin Chevrolet", home, "Fillmore"))
+    save("", page("Genuine GM Parts | Bunnin Chevrolet", home, None))
     js_records = json.dumps(records, separators=(",", ":"))
     search = f'''<section class="hero compact"><p>PARTS &amp; SERVICE</p><h1>Search by GM part number</h1><p>Already have a part number? Search it here. The Bunnin parts team will confirm the details with you.</p><form id="search"><label for="part">GM part number</label><input id="part" maxlength="80" placeholder="Enter part number"><button>Search</button></form><p id="status" role="status"></p><ul id="results"></ul></section><script>const data={js_records};const forms={{"Fillmore":"{ROOFS['Fillmore']['form']}","Santa Paula":"{ROOFS['Santa Paula']['form']}"}};const slugs={{"Fillmore":"bunnin-fillmore","Santa Paula":"bunnin-santa-paula"}};document.querySelector('#search').addEventListener('submit',e=>{{e.preventDefault();const q=part.value.trim(),m=data.filter(x=>x[0]===q);results.innerHTML='';m.forEach(x=>{{const a=document.createElement('a'),li=document.createElement('li'),u=new URL(forms[x[2]]);u.search=new URLSearchParams({{partNumber1:x[0],utm_source:'localparts',utm_medium:'organic_inventory',utm_campaign:'bunnin_exact_part_pilot',utm_content:slugs[x[2]]}});a.href=u;a.textContent='Request '+x[0]+' — Bunnin '+x[2];li.append(a);results.append(li)}});status.textContent=m.length?'Inventory observed—confirm with Bunnin.':'No exact observed part match.'}});</script>'''
-    save("search", page("Search GM Parts | Bunnin Chevrolet", search, "Fillmore", "noindex,follow"))
+    save("search", page("Search GM Parts | Bunnin Chevrolet", search, None, "noindex,follow"))
     urls = [BASE + "/"]
     for part, description, roof in records:
         dealer = ROOFS[roof]
@@ -50,8 +55,12 @@ def main():
         urls.append(BASE + "/" + path + "/")
     (OUT / "pilot.css").write_text((ROOT / "pilot.css").read_text(), encoding="utf-8")
     (OUT / ".nojekyll").touch()
-    (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
+    (OUT / "robots.txt").write_text(f"User-agent: *
+Allow: /
+Sitemap: {BASE}/sitemap.xml
+")
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f"<url><loc>{url}</loc></url>" for url in urls) + "</urlset>")
     (OUT / "404.html").write_text("<!doctype html><title>Page unavailable</title><h1>Inventory record unavailable</h1><p>This observation may have been replaced or withdrawn. Confirm with Bunnin.</p>")
     print(f"Built {len(records)} public part pages")
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
