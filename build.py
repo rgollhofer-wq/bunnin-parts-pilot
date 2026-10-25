@@ -18,18 +18,18 @@ ROOFS = {
 
 def request_url(part, roof):
     source = ROOFS[roof]
-    params = {"utm_source": "localparts", "utm_medium": "organic_inventory", "utm_campaign": "bunnin_exact_part_pilot", "utm_content": source["slug"]}
+    params = {"utm_source": "localparts", "utm_medium": "organic_inventory", "utm_campaign": "bunnin_exact_part_pilot", "utm_content": source['slug']}
     if part:
         params["partNumber1"] = part
     return f"/bunnin-parts-pilot/request/{source['slug']}/?" + urlencode(params)
 
 def header(roof):
     dealer = ROOFS[roof]
-    return f'''<div class="top"><span>Sales: {dealer["phone"]}</span><span>{escape(dealer["address"])}</span></div><header><a class="brand" href="{dealer["domain"]}"><span class="chevy">CHEVROLET</span><img src="{dealer["logo"]}" alt="{escape(dealer["name"])}"></a><nav><a href="{dealer["domain"]}">Home</a><a href="{dealer["domain"]}/new-inventory/index.htm">New</a><a href="{dealer["domain"]}/used-inventory/index.htm">Pre-Owned</a><a href="{dealer["domain"]}/ServiceAndPartsSpecials.htm">Service &amp; Parts</a><a href="/bunnin-parts-pilot/">Parts Center</a></nav></header>'''
+    return f'''<div class="top"><span>Sales: {dealer['phone']}</span><span>{escape(dealer['address'])}</span></div><header><a class="brand" href="{dealer['domain']}"><span class="chevy">CHEVROLET</span><img src="{dealer['logo']}" alt="{escape(dealer['name'])}"></a><nav><a href="{dealer['domain']}">Home</a><a href="{dealer['domain']}/new-inventory/index.htm">New</a><a href="{dealer['domain']}/used-inventory/index.htm">Pre-Owned</a><a href="{dealer['domain']}/ServiceAndPartsSpecials.htm">Service &amp; Parts</a><a href="/bunnin-parts-pilot/">Parts Center</a></nav></header>'''
 
 def footer(roof):
     dealer = ROOFS[roof]
-    return f'''<footer><div><strong>{escape(dealer["name"])}</strong><a href="{dealer["domain"]}/contact.htm">Contact</a><a href="{dealer["domain"]}/dealership/about.htm">About</a><a href="{dealer["domain"]}/privacy.htm">Privacy</a></div><p>{escape(dealer["address"])} · {dealer["phone"]}</p></footer>'''
+    return f'''<footer><div><strong>{escape(dealer['name'])}</strong><a href="{dealer['domain']}/contact.htm">Contact</a><a href="{dealer['domain']}/dealership/about.htm">About</a><a href="{dealer['domain']}/privacy.htm">Privacy</a></div><p>{escape(dealer['address'])} · {dealer['phone']}</p></footer>'''
 
 def group_header():
     return '''<div class="top"><span>Bunnin Chevrolet Parts</span><span>Fillmore &amp; Santa Paula</span></div><header><a class="brand" href="/bunnin-parts-pilot/"><span class="chevy">CHEVROLET</span><span class="group-name">Bunnin Chevrolet Parts</span></a><nav><a href="/bunnin-parts-pilot/">Parts Center</a><a href="https://www.bunninchevroletoffillmore.com/">Fillmore</a><a href="https://www.bunninchevroletofsantapaula.com/">Santa Paula</a></nav></header>'''
@@ -48,11 +48,11 @@ def save(path, content):
 
 def request_page(roof):
     dealer = ROOFS[roof]
-    return f'''<section class="hero compact"><p>PARTS &amp; SERVICE</p><h1>Request parts information</h1><p>Send your request to {escape(dealer["name"])}. A Bunnin parts professional will confirm fitment, availability, price, and next steps.</p><form class="request-form" action="https://formsubmit.co/ric@localparts.shop" method="POST"><input type="hidden" name="_cc" value="{dealer["lead"]}"><input type="hidden" name="_subject" value="Bunnin {roof} parts request"><input type="hidden" name="_next" value="{BASE}/request/{dealer["slug"]}/thanks/"><input type="hidden" name="_template" value="table"><input type="hidden" name="rooftop" value="{escape(dealer["name"], quote=True)}"><input type="hidden" name="utm_source" value="localparts"><input type="hidden" name="utm_medium" value="organic_inventory"><input type="hidden" name="utm_campaign" value="bunnin_exact_part_pilot"><input type="hidden" name="utm_content" value="{dealer["slug"]}"><input class="trap" type="text" name="_honey" tabindex="-1" autocomplete="off"><label>Your name<input name="name" autocomplete="name" required></label><label>Email address<input type="email" name="email" autocomplete="email" required></label><label>Phone number<input type="tel" name="phone" autocomplete="tel"></label><label>Vehicle (year, make, model)<input name="vehicle" placeholder="Example: 2022 Chevrolet Silverado 1500"></label><label>GM part number<input id="part-number" name="part_number" maxlength="80"></label><label>What do you need?<textarea name="request" rows="4" required></textarea></label><button type="submit">Send request</button></form><p class="subtle">Submitting a request does not create an order. Bunnin confirms all details before any commitment.</p></section><script>const q=new URLSearchParams(location.search);document.querySelector("#part-number").value=q.get("partNumber1")||"";for(const k of ["utm_source","utm_medium","utm_campaign","utm_content"]){{const i=document.querySelector(`[name="${{k}}"]`);if(q.get(k)&&i)i.value=q.get(k)}};</script>'''
+    return f'''<section class="hero compact"><p>PARTS &amp; SERVICE</p><h1>Request parts information</h1><p>Send your request to {escape(dealer['name'])}. A Bunnin parts professional will confirm fitment, availability, price, and next steps.</p><form class="request-form" action="https://formsubmit.co/ric@localparts.shop" method="POST"><input type="hidden" name="_cc" value="{dealer['lead']}"><input type="hidden" name="_subject" value="Bunnin {roof} parts request"><input type="hidden" name="_next" value="{BASE}/request/{dealer['slug']}/thanks/"><input type="hidden" name="_template" value="table"><input type="hidden" name="rooftop" value="{escape(dealer['name'], quote=True)}"><input type="hidden" name="utm_source" value="localparts"><input type="hidden" name="utm_medium" value="organic_inventory"><input type="hidden" name="utm_campaign" value="bunnin_exact_part_pilot"><input type="hidden" name="utm_content" value="{dealer['slug']}"><input class="trap" type="text" name="_honey" tabindex="-1" autocomplete="off"><label>Your name<input name="name" autocomplete="name" required></label><label>Email address<input type="email" name="email" autocomplete="email" required></label><label>Phone number<input type="tel" name="phone" autocomplete="tel"></label><label>Vehicle (year, make, model)<input name="vehicle" placeholder="Example: 2022 Chevrolet Silverado 1500"></label><label>GM part number<input id="part-number" name="part_number" maxlength="80"></label><label>What do you need?<textarea name="request" rows="4" required></textarea></label><button type="submit">Send request</button></form><p class="subtle">Submitting a request does not create an order. Bunnin confirms all details before any commitment.</p></section><script>const q=new URLSearchParams(location.search);document.querySelector("#part-number").value=q.get("partNumber1")||"";for(const k of ["utm_source","utm_medium","utm_campaign","utm_content"]){{const i=document.querySelector(`[name="${{k}}"]`);if(q.get(k)&&i)i.value=q.get(k)}};</script>'''
 
 def thanks_page(roof):
     dealer = ROOFS[roof]
-    return f'''<section class="hero compact"><p>PARTS &amp; SERVICE</p><h1>Request sent</h1><p>{escape(dealer["name"])} has received your request. A Bunnin parts professional will follow up to confirm fitment, availability, price, and next steps.</p><p><a class="button" href="/bunnin-parts-pilot/">Return to parts center</a></p></section>'''
+    return f'''<section class="hero compact"><p>PARTS &amp; SERVICE</p><h1>Request sent</h1><p>{escape(dealer['name'])} has received your request. A Bunnin parts professional will follow up to confirm fitment, availability, price, and next steps.</p><p><a class="button" href="/bunnin-parts-pilot/">Return to parts center</a></p></section>'''
 
 def main():
     records = json.loads(gzip.decompress(base64.b64decode((ROOT / "public_release.gz.b64").read_text())).decode())
@@ -66,13 +66,13 @@ def main():
     urls = [BASE + "/"]
     for roof in ROOFS:
         dealer = ROOFS[roof]
-        save(f"request/{dealer["slug"]}", page(f"Request Parts | {dealer["name"]}", request_page(roof), roof, "noindex,nofollow"))
-        save(f"request/{dealer["slug"]}/thanks", page(f"Request Sent | {dealer["name"]}", thanks_page(roof), roof, "noindex,nofollow"))
+        save(f"request/{dealer['slug']}", page(f"Request Parts | {dealer['name']}", request_page(roof), roof, "noindex,nofollow"))
+        save(f"request/{dealer['slug']}/thanks", page(f"Request Sent | {dealer['name']}", thanks_page(roof), roof, "noindex,nofollow"))
     for part, description, roof in records:
         dealer = ROOFS[roof]
-        path = f"parts/gm/{part}/{dealer["slug"]}"
-        body = f'''<section class="hero compact"><p>PARTS &amp; SERVICE</p><h1>{escape(description.title() or "Genuine GM Part")}</h1><p class="partno">GM Part {escape(part)}</p><p>Request information from {escape(dealer["name"])}. Your Bunnin parts professional will confirm availability, fitment, price, and next steps.</p><p><a class="button" href="{escape(request_url(part, roof), quote=True)}">Request parts information</a></p><p class="subtle">Submitting a request does not create an order.</p></section><section class="notice"><p>Inventory observed {STAMP}; not live availability. Confirm fitment with your VIN or vehicle details.</p></section>'''
-        save(path, page(f"{description.title() or "GM Part"} {part} | {dealer["name"]}", body, roof))
+        path = f"parts/gm/{part}/{dealer['slug']}"
+        body = f'''<section class="hero compact"><p>PARTS &amp; SERVICE</p><h1>{escape(description.title() or "Genuine GM Part")}</h1><p class="partno">GM Part {escape(part)}</p><p>Request information from {escape(dealer['name'])}. Your Bunnin parts professional will confirm availability, fitment, price, and next steps.</p><p><a class="button" href="{escape(request_url(part, roof), quote=True)}">Request parts information</a></p><p class="subtle">Submitting a request does not create an order.</p></section><section class="notice"><p>Inventory observed {STAMP}; not live availability. Confirm fitment with your VIN or vehicle details.</p></section>'''
+        save(path, page(f"{description.title() or "GM Part"} {part} | {dealer['name']}", body, roof))
         urls.append(BASE + "/" + path + "/")
     (OUT / "pilot.css").write_text((ROOT / "pilot.css").read_text(), encoding="utf-8")
     (OUT / ".nojekyll").touch()
