@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from build import OUT, ROOFS, handoff
+from build import OUT, ROOFS, request_url
 
 ROOT = Path(__file__).parent
 
@@ -30,7 +30,7 @@ def main():
         html = page.read_text(encoding="utf-8")
         assert ROOFS[roof]["phone"] in html
         assert ROOFS[roof]["address"] in html
-        url = handoff(part, roof)
+        url = request_url(part, roof)
         query = parse_qs(urlparse(url).query)
         assert url in unescape(html)
         assert query.get("partNumber1") == [part]
@@ -39,9 +39,15 @@ def main():
         assert query.get("utm_content") == [ROOFS[roof]["slug"]]
     home = (OUT / "index.html").read_text(encoding="utf-8")
     assert "Bunnin Chevrolet Parts" in home
-    assert ROOFS["Fillmore"]["form"] in home
-    assert ROOFS["Santa Paula"]["form"] in home
-    print(f"PASS: {len(rows)} rooftop pages; all part and UTM handoffs valid")
+    for roof in ROOFS:
+        dealer = ROOFS[roof]
+        request = OUT / "request" / dealer["slug"] / "index.html"
+        request_html = request.read_text(encoding="utf-8")
+        assert 'action="https://formsubmit.co/ric@localparts.shop"' in request_html
+        assert dealer["lead"] in request_html
+    assert request_url(None, "Fillmore") in home
+    assert request_url(None, "Santa Paula") in home
+    print(f"PASS: {len(rows)} rooftop pages; all routed request and UTM handoffs valid")
 
 if __name__ == "__main__":
     main()
